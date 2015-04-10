@@ -1,4 +1,4 @@
-package org.chaoneurogue.ld;
+package org.wildrabbit.ld;
 
 import flixel.util.FlxSave;
 

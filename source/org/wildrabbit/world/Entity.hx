@@ -1,4 +1,4 @@
-package org.chaoneurogue.world;
+package org.wildrabbit.world;
 
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectGroup;
@@ -7,8 +7,8 @@ import flixel.FlxState;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import openfl.geom.Rectangle;
-import org.chaoneurogue.ld.PlayState;
-import org.chaoneurogue.utils.MyTexturePackerData;
+import org.wildrabbit.ld.PlayState;
+import org.wildrabbit.utils.MyTexturePackerData;
 
 /**
  * ...
@@ -17,8 +17,8 @@ import org.chaoneurogue.utils.MyTexturePackerData;
 class Entity extends FlxSprite
 {
 	public static var paused:Bool = false;
-	
-	// If loaded from Tiled
+
+	// Properties fetched from Tiled
 	var tiledObj: TiledObject = null;
 	var game:PlayState = null;
 	var packerData:MyTexturePackerData = null;
@@ -46,11 +46,10 @@ class Entity extends FlxSprite
 		super.update();
 	}
 	
-	public function load(obj:TiledObject, game:PlayState):Void
+	public function load(obj:TiledObject, world:World):Void
 	{
 		tiledObj = obj;
 		name = obj.name;
-		this.game = game;
 		
 		if (obj.custom.contains("atlas"))
 		{
@@ -66,12 +65,13 @@ class Entity extends FlxSprite
 		}	
 		
 		setPosition(obj.x, obj.y - height);		
-		resolveWorld();
+		notifyWorld(world);
 	}
 	
-	private function resolveWorld():Void
+	private function notifyWorld(world:World):Void
 	{		
-		
+		// Subclasses should implement this by registering themselves in the appropriate world collection if necessary
+		// Basically, as in this example: world.AddEntity(this);
 	}
 	
 	public function startFadeIn(time:Float, ?callback:FlxTween -> Void):Void
@@ -105,25 +105,6 @@ class Entity extends FlxSprite
 				
 		scale.set(1,1);
 		FlxTween.tween(scale, { x:0, y:0 }, time, { type:FlxTween.ONESHOT, ease:FlxEase.backOut} );
-	}
-	public function updateCollisions():Void
-	{
-		
-	}
-	
-	public function onNextLevel():Void
-	{
-		
-	}
-	
-	public function onStartLevel():Void
-	{
-		
-	}
-	
-	public function onDie():Void
-	{
-		
 	}
 
 	public function setDisabled(value:Bool):Void

@@ -1,4 +1,4 @@
-package org.chaoneurogue.ld;
+package org.wildrabbit.ld;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -6,11 +6,12 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import haxe.Log;
 
 /**
- * A FlxState which can be used for the actual gameplay.
+ * A FlxState which can be used for the game's menu.
  */
-class PlayState extends FlxState
+class MenuState extends FlxState
 {
 	/**
 	 * Function that is called up when to state is created to set it up.
@@ -33,7 +34,9 @@ class PlayState extends FlxState
 	 * Function that is called once every frame.
 	 */
 	override public function update():Void
-	{
+	{		
 		super.update();
+		Log.trace("Moving states");
+		FlxG.switchState(new PlayState());
 	}
 }

@@ -1,4 +1,4 @@
-package org.chaoneurogue.utils ;
+package org.wildrabbit.utils ;
 
 import flixel.tile.FlxTile;
 import flixel.tile.FlxTilemap;
