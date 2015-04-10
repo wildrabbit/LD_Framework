@@ -13,7 +13,7 @@ import org.wildrabbit.world.World.EntityConfig;
 
 /**
  * ...
- * @author ith1ldin
+ * @author wildrabbit
  */
 class MapManager
 {

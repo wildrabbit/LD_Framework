@@ -12,7 +12,7 @@ import org.wildrabbit.utils.MyTexturePackerData;
 
 /**
  * ...
- * @author ith1ldin
+ * @author wildrabbit
  */
 class Entity extends FlxSprite
 {

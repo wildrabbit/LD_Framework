@@ -5,7 +5,7 @@ import flixel.tile.FlxTilemap;
 
 /**
  * Expose additional functionality from the Tiled object
- * @author ith1ldin
+ * @author wildrabbit
  */
 class MyFlxTilemap extends FlxTilemap
 {

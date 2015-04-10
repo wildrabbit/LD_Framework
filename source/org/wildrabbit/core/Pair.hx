@@ -2,7 +2,7 @@ package org.wildrabbit.core ;
 
 /**
  * ...
- * @author ith1ldin
+ * @author wildrabbit
  */
 @:generic
 class Pair<T>

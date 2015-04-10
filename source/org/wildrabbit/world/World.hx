@@ -29,7 +29,7 @@ typedef EntityConfig =
 
 /**
  * A level representation, particularly wrapping a Tiled map
- * @author ith1ldin
+ * @author wildrabbit
  */
 class World extends FlxGroup
 {

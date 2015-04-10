@@ -5,7 +5,7 @@ import openfl.geom.Rectangle;
 
 /**
  * ...
- * @author ith1ldin
+ * @author wildrabbit
  */
 class MyTexturePackerData extends TexturePackerData
 {

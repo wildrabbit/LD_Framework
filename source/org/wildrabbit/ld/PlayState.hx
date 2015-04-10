@@ -14,7 +14,7 @@ import org.wildrabbit.world.MapManager;
  * For now, we'll let the state itself be in charge of coordinating gameplay.
  * As a game grows in size, consider deferring all that functionality to a separate "GameplayManager" class, which will be responsible
  * for handling anything directly related to gameplay. The state, thus would basically delegate in that and other subsystems (ui?, etc)
- * @author ith1ldin
+ * @author wildrabbit
  */
 class PlayState extends FlxState
 {
