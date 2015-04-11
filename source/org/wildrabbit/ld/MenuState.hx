@@ -19,6 +19,18 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		super.create();
+		
+		var btn:FlxButton = new FlxButton(0,0, "To the game!", OnButtonClicked);
+		add(btn);
+		btn.x = (FlxG.width - btn.width) * 0.5;
+		btn.y = (FlxG.height - btn.height) * 0.5;
+
+	}
+	
+	public function OnButtonClicked():Void 
+	{
+		Log.trace("On to next state!");
+		FlxG.switchState(new PlayState());
 	}
 
 	/**
@@ -36,7 +48,5 @@ class MenuState extends FlxState
 	override public function update():Void
 	{		
 		super.update();
-		Log.trace("Moving states");
-		FlxG.switchState(new PlayState());
 	}
 }

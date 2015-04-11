@@ -20,7 +20,6 @@ class Entity extends FlxSprite
 
 	// Properties fetched from Tiled
 	var tiledObj: TiledObject = null;
-	var game:PlayState = null;
 	var packerData:MyTexturePackerData = null;
 	var name:String = "";
 	
@@ -32,13 +31,6 @@ class Entity extends FlxSprite
 		super(X, Y, SimpleGraphic);
 	}
 	
-	public static function create(obj:TiledObject, grp:TiledObjectGroup, o: FlxState, X:Float, Y:Float):Entity
-	{
-		var e:Entity = null;
-		// Determine type and instantiate accordingly
-		return e;
-	}
-	
 	override public function update():Void
 	{
 		if (Entity.paused) return;
@@ -46,7 +38,7 @@ class Entity extends FlxSprite
 		super.update();
 	}
 	
-	public function load(obj:TiledObject, world:World):Void
+	public function load(obj:TiledObject):Void
 	{
 		tiledObj = obj;
 		name = obj.name;
@@ -62,13 +54,11 @@ class Entity extends FlxSprite
 			height = r.height;
 			offset.set( - ((r.width - frameWidth) * 0.5), - ((r.height- frameHeight) * 0.5));
 			centerOrigin();
-		}	
-		
+		}			
 		setPosition(obj.x, obj.y - height);		
-		notifyWorld(world);
 	}
 	
-	private function notifyWorld(world:World):Void
+	public function notifyWorld(world:World):Void
 	{		
 		// Subclasses should implement this by registering themselves in the appropriate world collection if necessary
 		// Basically, as in this example: world.AddEntity(this);

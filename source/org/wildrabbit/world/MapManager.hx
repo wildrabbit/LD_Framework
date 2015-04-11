@@ -1,6 +1,7 @@
 package org.wildrabbit.world;
 import haxe.ds.Vector;
 import haxe.io.Path;
+import haxe.Log;
 import openfl.utils.Dictionary;
 import flixel.addons.editors.tiled.TiledLayer;
 import flixel.addons.editors.tiled.TiledMap;
@@ -12,7 +13,7 @@ import org.wildrabbit.utils.MyFlxTilemap;
 import org.wildrabbit.world.World.EntityConfig;
 
 /**
- * ...
+ * Simple manager to keep track of Tiled maps used in the game
  * @author wildrabbit
  */
 class MapManager
@@ -32,6 +33,12 @@ class MapManager
 			mTiledMapList.push(new TiledMap("assets/data/" + item));			
 			idx++;
 		}
+	}
+	
+	public function destroy():Void
+	{
+		mMapList = null;
+		mTiledMapList = null;
 	}
 
 	public function getLevelId(mapIdx:Int):String 
@@ -55,26 +62,6 @@ class MapManager
 			i++;
 		}
 		return -1;
-	}
-		
-	public function getLayerTilesFromMap(mapId:String, layerId:String):Array<Int>
-	{
-		var mapIdx:Int = getMapIndex(mapId);
-		if (mapIdx == -1) return null;
-		
-		return mTiledMapList[mapIdx].getLayer(layerId).tileArray;
-	}
-	
-	public function getTilesetPathFromMap(mapId:String, tilesetName:String = "level"):String
-	{
-		var mapIdx:Int = getMapIndex(mapId);
-		if (mapIdx == -1) return null;		
-		
-		var tileSet:TiledTileSet = mTiledMapList[mapIdx].getTileSet(tilesetName);
-		var imagePath = new Path(tileSet.imageSource);
-		var processedPath = "assets/images/" + imagePath.file + "." + imagePath.ext;
-		
-		return processedPath;
 	}
 	
 	public function getTileDimensions(mapId:String, tilesetName:String = "level"):Pair<Int>
@@ -100,7 +87,7 @@ class MapManager
 		else
 		{
 			var nextIndex:Int = idx + 1;
-			if (nextIndex < mMapList.length)
+			if (nextIndex >= mMapList.length)
 			{
 				if (cycle)
 				{
@@ -137,16 +124,25 @@ class MapManager
 		return dims;
 	}
 	
-	public function buildTilemap(mapId:String, layerId:String, tilesetId:String = "level", autoTileIdx:Int = 0, startingIndex:Int = 1, drawIndex:Int = 1, collideIndex:Int = 3):MyFlxTilemap
+	public function buildTilemap(mapId:String, layerId:String, tilesetId:String = "level", autoTileIdx:Int = 0, collideIndex:Int = 3):MyFlxTilemap
 	{
+		// If we need to parse the layers, use tileLayer.properties.contains/get
+		// To define a collision callback, tilemap.SetTileProperties(TileID, CollisionType, Callback);
+		// To change a map's properties: var tile:FlxTile = cast(tileObj, FlxTile);
+		// tile.tilemap.setTileByIndex(tile.mapIndex, 0, true);
+		
+
 		var tilemap:MyFlxTilemap = new MyFlxTilemap();
 		var tiledObj:TiledMap = getMap(mapId);
 		if (tiledObj != null)
 		{
 			var tileSet:TiledTileSet = tiledObj.getTileSet(tilesetId);
 			var imagePath = new Path(tileSet.imageSource);
-			var processedPath = "assets/images/" + imagePath.file + "." + imagePath.ext;		
-			tilemap.loadMap(tiledObj.getLayer(layerId).tileArray, processedPath, tileSet.tileWidth, tileSet.tileHeight, autoTileIdx, startingIndex, drawIndex, collideIndex);
+			var processedPath = "assets/images/" + imagePath.file + "." + imagePath.ext;	
+			tilemap.widthInTiles = tiledObj.width;
+			tilemap.heightInTiles = tiledObj.height;
+			var firstTileId:Int = tileSet.firstGID;			
+			tilemap.loadMap(tiledObj.getLayer(layerId).tileArray, processedPath, tileSet.tileWidth, tileSet.tileHeight, autoTileIdx, firstTileId, firstTileId, collideIndex);
 		}
 		return tilemap;
 	}
@@ -157,6 +153,7 @@ class MapManager
 		if (map == null) return;
 		
 		var objects:Array<TiledObject> = null;
+		var objectGroup:TiledObjectGroup;
 		var classInstance:Entity;
 		var i:Int = 0;
 		var c:Class<Dynamic>;		
@@ -166,21 +163,28 @@ class MapManager
 		var numConfigs:Int = 0;
 		for (objectLayerName in world.mEntityConfig.keys())
 		{
-			objects = map.getObjectGroup(objectLayerName).objects;
+			objectGroup = map.getObjectGroup(objectLayerName);
+			if (objectGroup == null)
+			{
+				continue;
+			}
+			
+			objects = objectGroup.objects;
 			for (o in objects)
 			{
 				i = 0;
-				numConfigs = configs.length;
 				configs = world.mEntityConfig[objectLayerName];
+				numConfigs = configs.length;
 				while (i< numConfigs)
 				{
 					if ((ignore == null || ignore.indexOf(o.type) == -1) && o.type == configs[i].typeName)
 					{
 						c = Type.resolveClass(configs[i].className);
 						classInstance = Type.createInstance(c, []);
-						classInstance.load(o, world);
+						classInstance.load(o);
+						classInstance.notifyWorld(world);
 					}
-					numConfigs++;
+					i++;
 				}
 			}
 		}

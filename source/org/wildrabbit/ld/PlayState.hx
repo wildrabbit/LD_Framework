@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
+import flixel.util.FlxColor;
 import flixel.util.FlxMath;
 import org.wildrabbit.world.World;
 import org.wildrabbit.world.MapManager;
@@ -20,7 +21,7 @@ class PlayState extends FlxState
 {
 	private var mMapManager:MapManager;
 	private var mLevelList:Array<String>;
-	
+	private var mTestButton:FlxButton;
 	private var mWorld:World;
 	private var mCurrentLevelId:String;
 	private var mStartingLevelIdx:Int;
@@ -36,13 +37,28 @@ class PlayState extends FlxState
 	{
 		super.create();
 		
-		mLevelList = new Array<String>();  // TODO: Replace with proper *.tmx list
+		mLevelList = ["test2.tmx", "test.tmx"];
 		mMapManager = new MapManager( mLevelList );
 		mStartingLevelIdx = 0;
 		mCurrentLevelId = mMapManager.getLevelId(mStartingLevelIdx);
 		
 		mWorld = new World(this, mCurrentLevelId);
 		mWorld.build();
+		
+		mTestButton = new FlxButton(10, 10, "Next!", OnButtonClicked);
+		add(mTestButton);
+	}
+	
+	public function OnButtonClicked():Void
+	{
+		remove(mWorld);
+		mWorld.destroy();
+		mCurrentLevelId = mMapManager.getNextMapId(mCurrentLevelId, true);
+		if (mCurrentLevelId != "")
+		{
+			mWorld = new World(this, mCurrentLevelId);
+			mWorld.build();			
+		}
 	}
 
 	/**
@@ -53,7 +69,17 @@ class PlayState extends FlxState
 	{
 		super.destroy();
 		
+		remove(mTestButton);
+		mTestButton = null;
+		
+		mLevelList = null;
+		
+		mMapManager.destroy();
+		mMapManager = null;
+		
+		remove(mWorld);
 		mWorld.destroy();
+		mWorld = null;
 	}
 
 	/**

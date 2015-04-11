@@ -114,6 +114,16 @@ class TiledMap
 		for (node in source.nodes.tileset)
 		{
 			auxNode = node;
+			// FIX (wildrabbit)
+			// Keep track of the first GID value read from the *.tmx.
+			// If we replace the tileset data object with the contents
+			// from a tileset file *.tsx, we lose that value!!
+			var oldFirstGid:Int = 1;
+			if (auxNode.has.firstgid)
+			{
+				oldFirstGid = Std.parseInt(auxNode.att.firstgid);							
+			}
+			
 			if (auxNode.has.source)
 			{
 				var sourcePath:String = auxNode.att.source;
@@ -125,12 +135,13 @@ class TiledMap
 						var assetPath:String = cast(Data, String);
 						assetPath = assetPath.substring(0, assetPath.lastIndexOf("/"));
 						sourcePath = assetPath + "/" + sourcePath;
+						var oldFirstGid:Int = 1;
 						auxNode = new Fast(Xml.parse(Assets.getText(sourcePath)));
 						auxNode = auxNode.node.tileset;
 					}
 				}	
 			}
-			
+
 			if (auxNode.has.name)
 			{
 				name = auxNode.att.name;
@@ -138,6 +149,10 @@ class TiledMap
 				if (!noLoadHash.exists(name))
 				{
 					tilesets.set(name, new TiledTileSet(auxNode));
+					if (!auxNode.has.firstgid)
+					{
+						tilesets.get(name).firstGID = oldFirstGid;
+					}
 				}
 			}
 					

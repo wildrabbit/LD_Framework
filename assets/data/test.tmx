@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" nextobjectid="6">
+ <tileset firstgid="1" source="land.tsx"/>
+ <tileset firstgid="5" source="decos.tsx"/>
+ <layer name="bg0" width="20" height="15">
+  <data encoding="base64" compression="zlib">
+   eJy100sKACAIBFBN73/mWhSIaOGnxWwfo+gAAGoKr4ydinGCwoua2kHlZXqhkeysVrdKP8/M7s+bu+pp80e/6u11ebf9dXsRkx/zRjwG/9co6Hk/Ib0Ji8UDJg==
+  </data>
+ </layer>
+ <layer name="bg1" width="20" height="15">
+  <data encoding="base64" compression="zlib">
+   eJy9kzEOADAIAl1a+/8Xd+pCMEFMymxOIhjhaYtzx+Qre1ZjVw59IKvioacOs5LLZHo3cplVHoznZq96U/jImtxy0uVu/351GZks3+kPO8rgf3YBvv8Axw==
+  </data>
+ </layer>
+ <objectgroup name="player">
+  <object id="1" name="player" type="Player" x="392" y="128" width="48" height="56">
+   <ellipse/>
+  </object>
+ </objectgroup>
+ <objectgroup name="others">
+  <object id="2" name="enemy" type="Enemy" x="168" y="352" width="56" height="48"/>
+ </objectgroup>
+</map>

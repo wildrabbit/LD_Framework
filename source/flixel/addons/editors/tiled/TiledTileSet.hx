@@ -2,6 +2,7 @@ package flixel.addons.editors.tiled ;
 
 import flash.geom.Rectangle;
 import flash.utils.ByteArray;
+import haxe.Log;
 import haxe.xml.Fast;
 
 /**

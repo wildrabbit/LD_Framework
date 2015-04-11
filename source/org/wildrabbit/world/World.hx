@@ -18,6 +18,8 @@ import flixel.util.FlxCollision;
 import org.wildrabbit.core.Pair;
 import org.wildrabbit.utils.MyFlxTilemap;
 import org.wildrabbit.ld.PlayState;
+import org.wildrabbit.world.Enemy;
+import org.wildrabbit.world.Player;
 
 
 	
@@ -40,11 +42,12 @@ class World extends FlxGroup
 
 	public var mIgnoredObjects:Array<String>;
 
-	public var mBackgroundTiles:MyFlxTilemap;
-	// TODO: Add/replace tile-dependent layers if needed
+	public var mBg0:MyFlxTilemap;
+	public var mBg1:MyFlxTilemap;
+	// TODO: Generalize/Add/replace tile-dependent layers when needed
 	
 	public var mCharacters:FlxTypedGroup<Entity>;
-	// TODO: Add/Replace with more specific collections if needed
+	// TODO: Add/Replace with more specific collections when needed
 	public var mPlayer:Entity;
 	
 	public var rows:Int = 20;
@@ -55,38 +58,73 @@ class World extends FlxGroup
 		super();
 		mParent = state;
 		mMapId = tiledLevelName;
+		mParent.add(this);
 		
-		mBackgroundTiles = null;
+		mPlayer = null;
+		mBg0 = mBg1 = null;
 		mCharacters = new FlxTypedGroup<Entity>();
 		
 		mEntityConfig = new Map();
-		// Example: 
-		//[
-		//	"items" => {typeName:"Player", className:"org.chaoneurogue.characters.Player"},
-		//	"some other items" => {typeName:"Key", className:"org.chaoneurogue.world.items.Key",objectGroupLayerName:"Items"},
-		//];
+		mEntityConfig["player"] = [{typeName:"Player", className:"org.wildrabbit.world.Player"}];	// IMPORTANT: The classes must be compiled so that 
+		mEntityConfig["others"] = [{typeName:"Enemy", className:"org.wildrabbit.world.Enemy"}];		// They can be resolved by flash.utils.getDefinitionByName()
 		mIgnoredObjects = null;
+	}
+	
+	override public function destroy():Void
+	{
+		super.destroy();
+		
+		remove(mPlayer);
+		mPlayer = null;
+		
+		for (e in mCharacters)
+		{
+			remove(e);
+		}
+		mCharacters.clear();
+		mCharacters = null;
+		
+		mEntityConfig = null;
+		mIgnoredObjects = null;
+		mMapId = null;
+		
+		remove(mBg0);
+		mBg0.destroy();
+		mBg0 = null;
+		
+		remove(mBg1);
+		mBg1.destroy();
+		mBg1 = null;
+
+		mParent = null;
 	}
 	
 	public function build():Void
 	{
 		var mapSize:Pair<Int> = mParent.getMapManager().getMapDimensions(mMapId);
-		FlxG.camera.setBounds(0, 0 , mapSize.mX, mapSize.mY, true);
-		FlxG.camera.follow(mPlayer);
 		
 		var managerRef:MapManager = mParent.getMapManager();
 		var mapDimensions:Pair<Int> = managerRef.getMapDimensions(mMapId);
 		
-		// If we need to parse the layers, use tileLayer.properties.contains/get
-		// To define a collision callback, tilemap.SetTileProperties(TileID, CollisionType, Callback);
-		// To change a map's properties: var tile:FlxTile = cast(tileObj, FlxTile);
-		// tile.tilemap.setTileByIndex(tile.mapIndex, 0, true);
-		
 		// Example: 
-		mBackgroundTiles = managerRef.buildTilemap(mMapId, "background", "tileset");
-		add(mBackgroundTiles);
+		mBg0 = managerRef.buildTilemap(mMapId, "bg0", "land");
+		add(mBg0);
+		mBg1 = managerRef.buildTilemap(mMapId, "bg1", "decos");
+		add(mBg1);
 
 		// Now object layers
 		managerRef.loadEntities(this);
+	}
+	
+	public function addPlayer(p:Player):Void
+	{
+		mPlayer = p;
+		add(mPlayer);
+	}
+	
+	public function addEnemy(e:Enemy):Void
+	{
+		mCharacters.add(e);
+		add(e);
 	}
 }
