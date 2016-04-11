@@ -8,6 +8,7 @@ import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObjectGroup;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledTileSet;
+import flixel.tile.FlxBaseTilemap;
 import org.wildrabbit.core.Pair;
 import org.wildrabbit.utils.MyFlxTilemap;
 import org.wildrabbit.world.World.EntityConfig;
@@ -139,10 +140,8 @@ class MapManager
 			var tileSet:TiledTileSet = tiledObj.getTileSet(tilesetId);
 			var imagePath = new Path(tileSet.imageSource);
 			var processedPath = "assets/images/" + imagePath.file + "." + imagePath.ext;	
-			tilemap.widthInTiles = tiledObj.width;
-			tilemap.heightInTiles = tiledObj.height;
 			var firstTileId:Int = tileSet.firstGID;			
-			tilemap.loadMap(tiledObj.getLayer(layerId).tileArray, processedPath, tileSet.tileWidth, tileSet.tileHeight, autoTileIdx, firstTileId, firstTileId, collideIndex);
+			tilemap.loadMapFromArray(tiledObj.getLayer(layerId).tileArray, tiledObj.width, tiledObj.height, processedPath, tileSet.tileWidth, tileSet.tileHeight, FlxTilemapAutoTiling.OFF, firstTileId, firstTileId, collideIndex);
 		}
 		return tilemap;
 	}

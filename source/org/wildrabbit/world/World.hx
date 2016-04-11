@@ -7,7 +7,7 @@ import flixel.addons.editors.tiled.TiledObjectGroup;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.group.FlxSpriteGroup;
-import flixel.group.FlxTypedGroup;
+import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import flixel.tile.FlxTile;
 import flixel.group.FlxGroup;
@@ -55,7 +55,7 @@ class World extends FlxGroup
 	
 	public function new(state:PlayState, tiledLevelName:String) 
 	{
-		super();
+		super(0);
 		mParent = state;
 		mMapId = tiledLevelName;
 		mParent.add(this);

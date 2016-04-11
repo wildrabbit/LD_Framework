@@ -6,7 +6,7 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
-import flixel.util.FlxMath;
+import flixel.math.FlxMath;
 import org.wildrabbit.world.World;
 import org.wildrabbit.world.MapManager;
 
@@ -85,10 +85,10 @@ class PlayState extends FlxState
 	/**
 	 * Function that is called once every frame.
 	 */
-	override public function update():Void
+	override public function update(elapsed:Float):Void
 	{
-		super.update();
+		super.update(elapsed);
 		
-		mWorld.update();
+		mWorld.update(elapsed);
 	}
 }

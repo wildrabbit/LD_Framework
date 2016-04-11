@@ -17,7 +17,7 @@ class Enemy extends Entity
 	override public function load(obj:TiledObject):Void
 	{
 		super.load(obj);
-		makeGraphic(32, 32, FlxColor.AQUAMARINE);
+		makeGraphic(32, 32, FlxColor.CYAN);
 	}
 	
 	override public function notifyWorld(world:World):Void

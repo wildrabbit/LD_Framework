@@ -4,11 +4,13 @@ import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectGroup;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.math.FlxRect;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import openfl.Assets;
 import openfl.geom.Rectangle;
 import org.wildrabbit.ld.PlayState;
-import org.wildrabbit.utils.MyTexturePackerData;
 
 /**
  * ...
@@ -20,7 +22,6 @@ class Entity extends FlxSprite
 
 	// Properties fetched from Tiled
 	var tiledObj: TiledObject = null;
-	var packerData:MyTexturePackerData = null;
 	var name:String = "";
 	
 	var disabled:Bool = false;
@@ -31,11 +32,23 @@ class Entity extends FlxSprite
 		super(X, Y, SimpleGraphic);
 	}
 	
-	override public function update():Void
+	override public function update(elapsed:Float):Void
 	{
 		if (Entity.paused) return;
 		if (disabled) return;
-		super.update();
+		super.update(elapsed);
+	}
+	
+	public function getFrameRectangle(frames:FlxAtlasFrames, key:String):FlxRect
+	{
+		for (frame in frames.frames)
+		{
+			if (frame.name == key)
+			{
+				return frame.frame;
+			}
+		}		
+		return null;
 	}
 	
 	public function load(obj:TiledObject):Void
@@ -46,10 +59,9 @@ class Entity extends FlxSprite
 		if (obj.custom.contains("atlas"))
 		{
 			var srcStr:String = "assets/images/" + obj.custom.get("atlas") ;
-			packerData = new MyTexturePackerData(srcStr + ".json", srcStr + ".png");
-			loadGraphicFromTexture(packerData, false, obj.custom.get("key"));
-		
-			var r:Rectangle = packerData.getFrameRectangle(obj.custom.get("key"));
+			var frames = FlxAtlasFrames.fromTexturePackerJson(srcStr + ".png", Assets.getText(srcStr + ".json"));
+			
+			var r:FlxRect = getFrameRectangle(frames, obj.custom.get("key"));
 			width = r.width;
 			height = r.height;
 			offset.set( - ((r.width - frameWidth) * 0.5), - ((r.height- frameHeight) * 0.5));
@@ -69,7 +81,7 @@ class Entity extends FlxSprite
 		alpha = 0;
 		if (callback != null)
 		{
-			FlxTween.tween(this, { alpha:1 }, time, { type:FlxTween.ONESHOT, ease:FlxEase.backIn, complete:callback} );			
+			FlxTween.tween(this, { alpha:1 }, time, { type:FlxTween.ONESHOT, ease:FlxEase.backIn, onComplete:callback} );			
 		}
 		else 
 		{
@@ -86,7 +98,7 @@ class Entity extends FlxSprite
 		alpha = 1;
 		if (callback != null)
 		{
-			FlxTween.tween(this, { alpha:0 }, time, { type:FlxTween.ONESHOT, ease:FlxEase.backOut, complete:callback} );			
+			FlxTween.tween(this, { alpha:0 }, time, { type:FlxTween.ONESHOT, ease:FlxEase.backOut, onComplete:callback} );			
 		}
 		else 
 		{
